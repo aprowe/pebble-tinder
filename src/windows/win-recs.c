@@ -48,7 +48,7 @@ void win_recs_init(void) {
 	pass_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PASS);
 
 	window = window_create();
-	window_set_fullscreen(window, true);
+	// window_set_fullscreen(window, true);
 	window_set_background_color(window, GColorBlack);
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,

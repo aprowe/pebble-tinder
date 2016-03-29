@@ -1,54 +1,86 @@
+#
+# This file is the default set of rules to compile a Pebble project.
+#
+# Feel free to customize this to your needs.
+#
+
+import os.path
 import os
 import json
 import shutil
 from sh import uglifyjs
-from sh import jshint
 
 top = '.'
 out = 'build'
 
-def options(ctx):
-	ctx.load('pebble_sdk')
 
-def configure(ctx):
-	ctx.load('pebble_sdk')
+def options(ctx):
+    ctx.load('pebble_sdk')
 
 def distclean(ctx):
-	ctx.load('pebble_sdk')
-	for p in ['build', 'src/generated', 'src/js/src/generated', 'src/js/pebble-js-app.js']:
-		try:
-			if os.path.isfile(p): os.remove(p)
-			elif os.path.isdir(p): shutil.rmtree(p)
-		except OSError as e:
-			pass
+    ctx.load('pebble_sdk')
+    for p in ['build', 'src/generated', 'src/js/src/generated', 'src/js/pebble-js-app.js']:
+        try:
+            if os.path.isfile(p): os.remove(p)
+            elif os.path.isdir(p): shutil.rmtree(p)
+        except OSError as e:
+            pass
+
+def configure(ctx):
+    """
+    This method is used to configure your build.
+    ctx.load(`pebble_sdk`) automatically configures a build for each valid platform in `targetPlatforms`.
+    Platform-specific configuration: add your change after calling ctx.load('pebble_sdk') and make sure to set the
+    correct environment first.
+    Universal configuration: add your change prior to calling ctx.load('pebble_sdk').
+    """
+    ctx.load('pebble_sdk')
+
 
 def build(ctx):
-	ctx.load('pebble_sdk')
+    ctx.load('pebble_sdk')
 
-	# Run jshint on appinfo.json
-	ctx(rule=js_jshint, source='appinfo.json')
 
-	# Run jshint on all the JavaScript files
-	ctx(rule=js_jshint, source=ctx.path.ant_glob('src/js/src/**/*.js'))
+    build_worker = os.path.exists('worker_src')
+    binaries = []
 
-	# Generate appinfo.h
-	ctx(rule=generate_appinfo_h, source='appinfo.json', target='../src/generated/appinfo.h')
+    for p in ctx.env.TARGET_PLATFORMS:
+        ctx.set_env(ctx.all_envs[p])
+        ctx.set_group(ctx.env.PLATFORM_NAME)
+        app_elf = '{}/pebble-app.elf'.format(ctx.env.BUILD_DIR)
+        ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'), target=app_elf)
 
-	# Generate keys.h
-	ctx(rule=generate_keys_h, source='src/keys.json', target='../src/generated/keys.h')
+    	# Run jshint on appinfo.json
+    	# ctx(rule=js_jshint, source='appinfo.json')
 
-	# Generate appinfo.js
-	ctx(rule=generate_appinfo_js, source='appinfo.json', target='../src/js/src/generated/appinfo.js')
+    	# Run jshint on all the JavaScript files
+    	# ctx(rule=js_jshint, source=ctx.path.ant_glob('src/js/src/**/*.js'))
 
-	# Generate keys.js
-	ctx(rule=generate_keys_js, source='src/keys.json', target='../src/js/src/generated/keys.js')
+    	# Generate appinfo.h
+    	ctx(rule=generate_appinfo_h, source='appinfo.json', target='../src/generated/appinfo.h')
 
-	# Combine the source JS files into a single JS file.
-	ctx(rule=concatenate_js, source=ctx.path.ant_glob('src/js/src/**/*.js'), target='../src/js/pebble-js-app.js')
+    	# Generate keys.h
+    	ctx(rule=generate_keys_h, source='src/keys.json', target='../src/generated/keys.h')
 
-	# Build and bundle the Pebble app.
-	ctx.pbl_program(source=ctx.path.ant_glob('src/**/*.c'), target='pebble-app.elf')
-	ctx.pbl_bundle(elf='pebble-app.elf', js='../src/js/pebble-js-app.js')
+    	# Generate appinfo.js
+    	ctx(rule=generate_appinfo_js, source='appinfo.json', target='../src/js/src/generated/appinfo.js')
+
+    	# Generate keys.js
+    	ctx(rule=generate_keys_js, source='src/keys.json', target='../src/js/src/generated/keys.js')
+
+    	# Combine the source JS files into a single JS file.
+    	ctx(rule=concatenate_js, source=ctx.path.ant_glob('src/js/src/**/*.js'), target='../src/js/pebble-js-app.js')
+
+
+        if build_worker:
+            worker_elf = '{}/pebble-worker.elf'.format(ctx.env.BUILD_DIR)
+            binaries.append({'platform': p, 'app_elf': app_elf, 'worker_elf': worker_elf})
+            ctx.pbl_worker(source=ctx.path.ant_glob('worker_src/**/*.c'), target=worker_elf)
+        else:
+            binaries.append({'platform': p, 'app_elf': app_elf})
+
+    ctx.set_group('bundle')
+    ctx.pbl_bundle(binaries=binaries, js=ctx.path.ant_glob(['src/js/**/*.js', 'src/js/**/*.json']), js_entry_file='src/js/app.js')
 
 def generate_appinfo_h(task):
 	src = task.inputs[0].abspath()

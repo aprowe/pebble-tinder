@@ -10,7 +10,7 @@ static Window* window = NULL;
 
 void win_settings_init(void) {
 	window = window_create();
-	window_set_fullscreen(window, true);
+	// window_set_fullscreen(window, true);
 	window_set_background_color(window, GColorBlack);
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,

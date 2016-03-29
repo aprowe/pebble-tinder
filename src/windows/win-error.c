@@ -17,7 +17,7 @@ void win_error_init(void) {
 	error_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ERROR);
 
 	window = window_create();
-	window_set_fullscreen(window, true);
+	// window_set_fullscreen(window, true);
 	window_set_background_color(window, GColorBlack);
 	window_set_click_config_provider(window, click_config_provider);
 	window_set_window_handlers(window, (WindowHandlers) {
