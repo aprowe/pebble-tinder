@@ -1,11 +1,22 @@
 function convertImage(rgbaPixels, numComponents, width, height){
-	var grey_pixels = greyScale(rgbaPixels, width, height, numComponents);
+	// var grey_pixels = greyScale(rgbaPixels, width, height, numComponents);
+	var pixel6 = BitColor(rgbaPixels, width, height, numComponents);
 
+	var SIZE = 135;
 	var final_pixels = [];
-	ScaleRect(final_pixels, grey_pixels, width, height, 144, 144);
-	floydSteinberg(final_pixels, 144, 144);
+	ScaleRect(final_pixels, pixel6, width, height, SIZE, SIZE);
+	floydSteinberg(final_pixels, SIZE, SIZE);
 
-	return convertToPebbleBitmap(final_pixels, 144, 144);
+	return final_pixels;
+	// return convertToPebbleBitmap(final_pixels, 144, 144);
+}
+
+function to6Bit(pixels) {
+	var data = [];
+	for(var i in pixels) {
+		data.push(Math.floor(pixels[i]/4));
+	}
+	return data;
 }
 
 /**
