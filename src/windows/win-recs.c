@@ -49,7 +49,7 @@ void win_recs_init(void) {
 
 	window = window_create();
 	// window_set_fullscreen(window, true);
-	window_set_background_color(window, GColorBlack);
+	window_set_background_color(window, GColorWhite);
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,
 		.unload = window_unload,
@@ -111,8 +111,8 @@ void win_recs_loading_stop(void) {
 
 static void loading_layer_update_callback(Layer *layer, GContext* ctx) {
 	if (!is_loading) return;
-	graphics_context_set_stroke_color(ctx, GColorWhite);
-	graphics_context_set_fill_color(ctx, GColorWhite);
+	graphics_context_set_stroke_color(ctx, GColorFolly);
+	graphics_context_set_fill_color(ctx, GColorJaegerGreen);
 	graphics_draw_circle(ctx, GPoint(48, 8), 7);
 	graphics_draw_circle(ctx, GPoint(72, 8), 7);
 	graphics_draw_circle(ctx, GPoint(96, 8), 7);
@@ -210,13 +210,13 @@ static void window_load(Window *window) {
 	name_text_layer = text_layer_create(GRect(5, 139, 134, 28));
 	text_layer_set_system_font(name_text_layer, FONT_KEY_GOTHIC_24_BOLD);
 	text_layer_set_text(name_text_layer, recs_get()->name);
-	text_layer_set_colors(name_text_layer, GColorWhite, GColorClear);
+	text_layer_set_colors(name_text_layer, GColorBlack, GColorClear);
 	text_layer_add_to_window(name_text_layer, window);
 
 	image_bitmap_layer = bitmap_layer_create(GRect(0, -144, 144, 144));
 	bitmap_layer_set_bitmap(image_bitmap_layer, recs_get()->image);
 	bitmap_layer_set_alignment(image_bitmap_layer, GAlignCenter);
-	bitmap_layer_set_background_color(image_bitmap_layer, GColorBlack);
+	bitmap_layer_set_background_color(image_bitmap_layer, GColorLightGray);
 	bitmap_layer_add_to_window(image_bitmap_layer, window);
 }
 

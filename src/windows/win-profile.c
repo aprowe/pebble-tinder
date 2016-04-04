@@ -26,7 +26,7 @@ void win_profile_init(void) {
 
 	window = window_create();
 	// window_set_fullscreen(window, true);
-	window_set_background_color(window, GColorBlack);
+	window_set_background_color(window, GColorWhite);
 	window_set_window_handlers(window, (WindowHandlers) {
 		.load = window_load,
 		.unload = window_unload,
@@ -79,32 +79,32 @@ static void window_load(Window *window) {
 	name_text_layer = text_layer_create(GRect(4, 0, 136, 28));
 	text_layer_set_system_font(name_text_layer, FONT_KEY_GOTHIC_24_BOLD);
 	text_layer_set_text(name_text_layer, recs_get()->name);
-	text_layer_set_colors(name_text_layer, GColorWhite, GColorClear);
+	text_layer_set_colors(name_text_layer, GColorFolly, GColorClear);
 	text_layer_add_to_window(name_text_layer, window);
 
 	distance_text_layer = text_layer_create(GRect(4, 26, 136, 22));
 	text_layer_set_system_font(distance_text_layer, FONT_KEY_GOTHIC_18);
 	text_layer_set_text(distance_text_layer, recs_get()->distance);
-	text_layer_set_colors(distance_text_layer, GColorWhite, GColorClear);
+	text_layer_set_colors(distance_text_layer, GColorBlack, GColorClear);
 	text_layer_add_to_window(distance_text_layer, window);
 
 	bio_text_layer = text_layer_create(GRect(4, -2, 136, 1024));
 	text_layer_set_system_font(bio_text_layer, FONT_KEY_GOTHIC_18_BOLD);
 	text_layer_set_text(bio_text_layer, recs_get()->bio);
-	text_layer_set_colors(bio_text_layer, GColorWhite, GColorClear);
+	text_layer_set_colors(bio_text_layer, GColorBlack, GColorClear);
 	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bio_text_layer));
 
 	commlikes_text_layer = text_layer_create(GRect(98, 4, 26, 22));
 	text_layer_set_system_font(commlikes_text_layer, FONT_KEY_GOTHIC_18_BOLD);
 	text_layer_set_text(commlikes_text_layer, recs_get()->common_likes);
-	text_layer_set_colors(commlikes_text_layer, GColorWhite, GColorClear);
+	text_layer_set_colors(commlikes_text_layer, GColorBlack, GColorClear);
 	text_layer_set_text_alignment(commlikes_text_layer, GTextAlignmentRight);
 	text_layer_add_to_window(commlikes_text_layer, window);
 
 	commfriends_text_layer = text_layer_create(GRect(98, 26, 26, 22));
 	text_layer_set_system_font(commfriends_text_layer, FONT_KEY_GOTHIC_18_BOLD);
 	text_layer_set_text(commfriends_text_layer, recs_get()->common_friends);
-	text_layer_set_colors(commfriends_text_layer, GColorWhite, GColorClear);
+	text_layer_set_colors(commfriends_text_layer, GColorBlack, GColorClear);
 	text_layer_set_text_alignment(commfriends_text_layer, GTextAlignmentRight);
 	text_layer_add_to_window(commfriends_text_layer, window);
 }
