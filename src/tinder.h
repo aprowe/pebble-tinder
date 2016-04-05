@@ -20,6 +20,7 @@ void tinder_reset_image();
 void tinder_request_rec();
 void tinder_like();
 void tinder_pass();
+void tinder_next_image();
 void tinder_reload_data_and_mark_dirty();
 Recommendation* recs_get();
 char* tinder_get_error();

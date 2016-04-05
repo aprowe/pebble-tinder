@@ -141,12 +141,13 @@ static void animation_stopped(Animation *animation, bool finished, void *data) {
 }
 
 static void select_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
-	if (strlen(recs_get()->name)) {
-		win_profile_push();
-	}
+	tinder_next_image();
 }
 
 static void select_long_click_handler(ClickRecognizerRef recognizer, Window *window) {
+	if (strlen(recs_get()->name)) {
+		win_profile_push();
+	}
 	// win_options_push();
 }
 

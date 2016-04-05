@@ -4,6 +4,7 @@ var Tinder = {
 	token: '',
 	currentRec: {},
 	bufferSize: 440,
+	currentImage: 0,
 
 	init: function() {
 		Tinder.facebookToken = localStorage.getItem('facebookToken') || '';
@@ -92,8 +93,6 @@ var Tinder = {
 		rec.friends = Tinder.currentRec.common_friend_count || 0;
 		rec.url = getBestImage(Tinder.currentRec.photos[0].processedFiles);
 
-		console.log(JSON.stringify(rec));
-
 		appMessageQueue.send({type:TYPE.REC, method:METHOD.DATA, name:rec.name, distance:rec.distance, commlikes:rec.likes, commfriends:rec.friends});
 		appMessageQueue.send({type:TYPE.REC, method:METHOD.DATA, bio:rec.bio});
 
@@ -106,6 +105,16 @@ var Tinder = {
 
 	pass: function() {
 		Tinder.api.pass(Tinder.currentRec._id, Tinder.sendNextRecommendation);
+	},
+
+	getNextImage: function () {
+		if (Tinder.currentImage + 1 >= Tinder.currentRec.photos.length) {
+			Tinder.currentImage = 0;
+		} else  {
+			Tinder.currentImage++;
+		}
+		var url = getBestImage(Tinder.currentRec.photos[Tinder.currentImage].processedFiles);
+		Tinder.sendImage(url);
 	},
 
 	api: {
@@ -185,6 +194,9 @@ var Tinder = {
 				break;
 			case METHOD.BUFFERSIZE:
 				Tinder.bufferSize = e.payload.index - 128;
+				break;
+			case METHOD.NEXT_IMAGE:
+				Tinder.getNextImage();
 				break;
 		}
 	},
