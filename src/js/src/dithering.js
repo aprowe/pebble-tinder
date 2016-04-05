@@ -10,7 +10,7 @@ function floydSteinberg(sb, w, h) {       // source buffer, width, height
 		for (var x = 0; x < w; x++) {
 			var ci = y * w + x;              // current buffer index
 			var cc = sb[ci];                 // current color
-			var rc = (cc < 128 ? 0 : 255);   // real (rounded) color
+			var rc = Math.round(cc / 255 * 3) * 255 / 3;   // real (rounded) color
 			sb[ci] = rc;                     // saving real color
 			var err = cc - rc;               // error amount
 			if (x + 1 < w)  sb[ci     + 1] += (err * 7) >> 4;  // if right neighbour exists
@@ -20,3 +20,7 @@ function floydSteinberg(sb, w, h) {       // source buffer, width, height
 			if (x + 1 < w)  sb[ci + w + 1] += (err * 1) >> 4;  // bottom right neighbour
 		}
 }
+
+// function to6BitColor (x) {
+// 	return Math.round((x / 255) * 3) * 255 / 3;
+// }

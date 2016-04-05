@@ -20,7 +20,8 @@ function ScaleLine(Target, Source, SrcWidth, TgtWidth, offset_target, offset_sou
 	}
 }
 
-function ScaleRect(Target, Source, SrcWidth, SrcHeight, TgtWidth, TgtHeight) {
+function ScaleRect(Source, SrcWidth, SrcHeight, TgtWidth, TgtHeight) {
+	var Target = [];
 	var NumPixels = TgtHeight;
 	var IntPart = Math.floor(SrcHeight / TgtHeight) * SrcWidth;
 	var FractPart = SrcHeight % TgtHeight;
@@ -41,6 +42,8 @@ function ScaleRect(Target, Source, SrcWidth, SrcHeight, TgtWidth, TgtHeight) {
 			i_source += SrcWidth;
 		}
 	}
+
+	return Target;
 }
 
 function greyScale(rgba_input, w, h, nb_components) {

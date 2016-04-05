@@ -1,23 +1,49 @@
 function convertImage(rgbaPixels, numComponents, width, height){
 	// var grey_pixels = greyScale(rgbaPixels, width, height, numComponents);
-	var pixel6 = BitColor(rgbaPixels, width, height, numComponents);
-
+	// var pixel6 = BitColor(rgbaPixels, width, height, numComponents);
+	var colors = splitColors(rgbaPixels, numComponents);
 	var SIZE = 135;
-	var final_pixels = [];
-	ScaleRect(final_pixels, pixel6, width, height, SIZE, SIZE);
-	floydSteinberg(final_pixels, SIZE, SIZE);
 
+	var r = ScaleRect(colors[0], width, height, SIZE, SIZE);
+	var g = ScaleRect(colors[1], width, height, SIZE, SIZE);
+	var b = ScaleRect(colors[2], width, height, SIZE, SIZE);
+
+	floydSteinberg(r, SIZE, SIZE);
+	floydSteinberg(g, SIZE, SIZE);
+	floydSteinberg(b, SIZE, SIZE);
+
+	var final_pixels = combineTo6Bit(r, g, b);
 	return final_pixels;
-	// return convertToPebbleBitmap(final_pixels, 144, 144);
 }
 
-function to6Bit(pixels) {
-	var data = [];
-	for(var i in pixels) {
-		data.push(Math.floor(pixels[i]/4));
+function splitColors(rgba, numComponents) {
+	var colors = [];
+
+	for(var i = 0; i < numComponents; i++) {
+		colors[i] = [];
 	}
-	return data;
+	for(var i = 0; i < rgba.length; i++) {
+		colors[i % numComponents].push(rgba[i]);
+	}
+
+	return colors;
 }
+
+function combineTo6Bit(rArray, gArray, bArray) {
+	var pixels = [];
+
+	for (var i = 0; i < rArray.length; i++) {
+		var r = Math.floor(rArray[i] * 3 / 255);
+		var g = Math.floor(gArray[i] * 3 / 255);
+		var b = Math.floor(bArray[i] * 3 / 255);
+
+		var color = (r << 4) + (g << 2) + (b << 0);
+		pixels.push(color);
+	}
+
+	return pixels;
+}
+
 
 /**
  * Credits : Damian Mehers : http://blog.evernote.com/tech/2014/04/23/evernote-pebble-update/#bitmaps
