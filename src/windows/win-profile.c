@@ -66,14 +66,22 @@ static void window_load(Window *window) {
 	});
 	scroll_layer_add_to_window(scroll_layer, window);
 
+	GColor * palette = malloc(2);
+	palette[0] = GColorGreen;
+	palette[1] = GColorWhite;
+	gbitmap_set_palette(likes_bitmap, palette, false);
+
+	GColor * friends_palette = malloc(2);
+	friends_palette[0] = GColorVividCerulean;
+	friends_palette[1] = GColorWhite;
+	gbitmap_set_palette(friends_bitmap, friends_palette, false);
+
 	likes_bitmap_layer = bitmap_layer_create(GRect(127, 10, 16, 12));
 	bitmap_layer_set_bitmap(likes_bitmap_layer, likes_bitmap);
-	bitmap_layer_set_compositing_mode(likes_bitmap_layer, GCompOpAssignInverted);
 	bitmap_layer_add_to_window(likes_bitmap_layer, window);
 
 	friends_bitmap_layer = bitmap_layer_create(GRect(127, 34, 16, 10));
 	bitmap_layer_set_bitmap(friends_bitmap_layer, friends_bitmap);
-	bitmap_layer_set_compositing_mode(friends_bitmap_layer, GCompOpAssignInverted);
 	bitmap_layer_add_to_window(friends_bitmap_layer, window);
 
 	name_text_layer = text_layer_create(GRect(4, 0, 136, 28));
