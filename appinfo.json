@@ -1,10 +1,10 @@
 {
-  "uuid": "c8badf6d-c504-4b87-99ff-c4236005b9ed",
+  "uuid": "df615062-da6e-4674-8340-3d09173a47f4",
   "shortName": "Tinder",
   "longName": "Tinder",
-  "companyName": "Neal",
+  "companyName": "Arowe",
   "versionCode": 1,
-  "versionLabel": "0.2",
+  "versionLabel": "0.3",
   "capabilities": [
     "configurable",
     "location"
