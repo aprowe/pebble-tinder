@@ -111,8 +111,8 @@ void win_recs_loading_stop(void) {
 
 static void loading_layer_update_callback(Layer *layer, GContext* ctx) {
 	if (!is_loading) return;
-	graphics_context_set_stroke_color(ctx, GColorFolly);
-	graphics_context_set_fill_color(ctx, GColorJaegerGreen);
+	graphics_context_set_stroke_color(ctx, GColorRed);
+	graphics_context_set_fill_color(ctx, GColorRed);
 	graphics_draw_circle(ctx, GPoint(48, 8), 7);
 	graphics_draw_circle(ctx, GPoint(72, 8), 7);
 	graphics_draw_circle(ctx, GPoint(96, 8), 7);
@@ -142,6 +142,7 @@ static void animation_stopped(Animation *animation, bool finished, void *data) {
 
 static void select_single_click_handler(ClickRecognizerRef recognizer, Window *window) {
 	tinder_next_image();
+	win_recs_loading_start();
 }
 
 static void select_long_click_handler(ClickRecognizerRef recognizer, Window *window) {
@@ -187,9 +188,29 @@ static void click_config_provider(Window *window) {
 }
 
 static void window_load(Window *window) {
+	// Palettize the bitmaps
+	GColor * palette = malloc(2);
+	palette[0] = GColorFolly;
+	palette[1] = GColorWhite;
+	gbitmap_set_palette(logo_bitmap, palette, false);
+
+	GColor * pass_palette = malloc(2);
+	pass_palette[0] = GColorFolly;
+	pass_palette[1] = GColorWhite;
+	gbitmap_set_palette(pass_bitmap, pass_palette, false);
+
+	GColor * like_palette = malloc(2);
+	like_palette[0] = GColorGreen;
+	like_palette[1] = GColorWhite;
+	gbitmap_set_palette(like_bitmap, like_palette, false);
+
+	GColor * info_palette = malloc(2);
+	info_palette[0] = GColorVividCerulean;
+	info_palette[1] = GColorWhite;
+	gbitmap_set_palette(info_bitmap, info_palette, false);
+
 	logo_bitmap_layer = bitmap_layer_create(GRect(40, 32, 64, 64));
 	bitmap_layer_set_bitmap(logo_bitmap_layer, logo_bitmap);
-	bitmap_layer_set_compositing_mode(logo_bitmap_layer, GCompOpAssignInverted);
 	bitmap_layer_add_to_window(logo_bitmap_layer, window);
 
 	action_bar_layer_create_in_window(action_bar_layer, window);
@@ -197,6 +218,7 @@ static void window_load(Window *window) {
 	action_bar_layer_set_icon(action_bar_layer, BUTTON_ID_UP, like_bitmap);
 	action_bar_layer_set_icon(action_bar_layer, BUTTON_ID_SELECT, info_bitmap);
 	action_bar_layer_set_icon(action_bar_layer, BUTTON_ID_DOWN, pass_bitmap);
+	action_bar_layer_set_background_color(action_bar_layer, GColorWhite);
 
 	actionbar_prop_animation = property_animation_create_layer_frame(action_bar_layer_get_layer(action_bar_layer), NULL, &GRect(144, 2, 20, 140));
 	animation_set_duration((Animation*) actionbar_prop_animation, 500);
@@ -206,7 +228,6 @@ static void window_load(Window *window) {
 
 	loading_layer = layer_create(GRect(0, 108, 144, 24));
 	layer_set_update_proc(loading_layer, loading_layer_update_callback);
-	layer_add_to_window(loading_layer, window);
 
 	name_text_layer = text_layer_create(GRect(5, 139, 134, 28));
 	text_layer_set_system_font(name_text_layer, FONT_KEY_GOTHIC_24_BOLD);
@@ -217,8 +238,9 @@ static void window_load(Window *window) {
 	image_bitmap_layer = bitmap_layer_create(GRect(0, -144, 144, 144));
 	bitmap_layer_set_bitmap(image_bitmap_layer, recs_get()->image);
 	bitmap_layer_set_alignment(image_bitmap_layer, GAlignCenter);
-	bitmap_layer_set_background_color(image_bitmap_layer, GColorLightGray);
+	bitmap_layer_set_background_color(image_bitmap_layer, GColorWhite);
 	bitmap_layer_add_to_window(image_bitmap_layer, window);
+	layer_add_to_window(loading_layer, window);
 }
 
 static void window_unload(Window *window) {

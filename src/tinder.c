@@ -85,17 +85,15 @@ void tinder_in_received_handler(DictionaryIterator *iter) {
 			if (!dict_find(iter, APP_KEY_METHOD)) return;
 			switch (dict_find(iter, APP_KEY_METHOD)->value->uint8) {
 				case KEY_METHOD_BEGIN:
-				// tinder_reset_image();
 					break;
 				case KEY_METHOD_DATA: {
 					int32_t index = dict_find(iter, APP_KEY_INDEX)->value->int32;
 					memcpy(image_data + index, &dict_find(iter, APP_KEY_IMAGE)->value->uint8, dict_find(iter, APP_KEY_IMAGE)->length);
-					gbitmap_set_data(recs_get()->image, image_data, GBitmapFormat8Bit, IMAGE_SIZE, false);
-					tinder_reload_data_and_mark_dirty();
 					break;
 				}
 				case KEY_METHOD_END:
 					win_recs_loading_stop();
+					gbitmap_set_data(recs_get()->image, image_data, GBitmapFormat8Bit, IMAGE_SIZE, false);
 					tinder_reload_data_and_mark_dirty();
 					break;
 			}
@@ -122,12 +120,7 @@ void tinder_reset() {
 }
 
 void tinder_reset_image() {
-	// free_safe(recs_get()->image);
-	// recs_get()->image = gbitmap_create_with_data(image_data);
-	// gbitmap_destroy_safe(recs_get()->image);
 	memset(image_data, 63, IMAGE_DATA_SIZE);
-	// gbitmap_set_data(recs_get()->image, image_data, GBitmapFormat8Bit, IMAGE_SIZE, false);
-
 }
 
 void tinder_request_rec() {

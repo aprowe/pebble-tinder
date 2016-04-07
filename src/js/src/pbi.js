@@ -1,9 +1,7 @@
 function convertImage(rgbaPixels, numComponents, width, height){
-	// var grey_pixels = greyScale(rgbaPixels, width, height, numComponents);
-	// var pixel6 = BitColor(rgbaPixels, width, height, numComponents);
 	var colors = splitColors(rgbaPixels, numComponents);
-	var SIZE = 135;
 
+	var SIZE = 135;
 	var r = ScaleRect(colors[0], width, height, SIZE, SIZE);
 	var g = ScaleRect(colors[1], width, height, SIZE, SIZE);
 	var b = ScaleRect(colors[2], width, height, SIZE, SIZE);

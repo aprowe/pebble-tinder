@@ -56,24 +56,3 @@ function greyScale(rgba_input, w, h, nb_components) {
 	}
 	return result;
 }
-
-function BitColor(rgba_input, w, h, nb_components) {
-	var result = [];  // Array of bytes that we produce
-	for (var y = 0; y < h; y++) {
-		for (var x = 0; x < w; x++) {
-			var i = (y * nb_components) * w + x * nb_components;
-			var r = Math.floor(rgba_input[i] * 3 / 255);
-			var g = Math.floor(rgba_input[i+1] * 3 / 255);
-			var b = Math.floor(rgba_input[i+2] * 3 / 255);
-			result[y * w + x] = (r << 4) + (g << 2) + (b << 0);
-		}
-	}
-	return result;
-}
-
-function to6Bit(value) {
-	if(value < 43) return 0;
-	if(value < 129) return 85;
-	if(value < 213) return 170;
-	else return 255;
-}
