@@ -1,4 +1,4 @@
-# Tinder for Pebble *In Color*
+# Tinder for Pebble *in Color*
 
 A Tinder app for the Pebble Smartwatch to like, pass and view profiles on the go!
 
