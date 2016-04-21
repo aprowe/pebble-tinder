@@ -81,6 +81,20 @@ var Tinder = {
 		});
 	},
 
+	checkIfMatch: function (xhr) {
+		var response = JSON.parse(xhr.responseText);
+		if (response.match === true) {
+			Tinder.sendMatchPage();
+		} else {
+			Tinder.sendNextRecommendation();
+		}
+	},
+
+	sendMatchPage: function () {
+		appMessageQueue.clear();
+		appMessageQueue.send({type:TYPE.MATCH, name:"Matched!"});
+	},
+
 	sendNextRecommendation: function() {
 		if (!Tinder.recs.length) return Tinder.getRecs();
 		Tinder.currentRec = Tinder.recs.shift();
@@ -100,7 +114,7 @@ var Tinder = {
 	},
 
 	like: function() {
-		Tinder.api.like(Tinder.currentRec._id, Tinder.sendNextRecommendation);
+		Tinder.api.like(Tinder.currentRec._id, Tinder.checkIfMatch);
 	},
 
 	pass: function() {

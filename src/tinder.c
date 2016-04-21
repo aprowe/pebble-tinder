@@ -6,6 +6,7 @@
 #include "appmessage.h"
 #include "windows/win-recs.h"
 #include "windows/win-error.h"
+#include "windows/win-match.h"
 
 #define IMAGE_SIZE 135
 #define IMAGE_DATA_SIZE (IMAGE_SIZE * IMAGE_SIZE)
@@ -33,6 +34,7 @@ void tinder_init(void) {
 
 	win_recs_init();
 	win_error_init();
+	win_match_init();
 }
 
 void tinder_deinit(void) {
@@ -47,6 +49,11 @@ void tinder_deinit(void) {
 void tinder_in_received_handler(DictionaryIterator *iter) {
 	if (!dict_find(iter, APP_KEY_TYPE)) return;
 	switch (dict_find(iter, APP_KEY_TYPE)->value->uint8) {
+		case KEY_TYPE_MATCH: {
+			vibes_long_pulse();
+			win_match_push();
+			break;
+		}
 		case KEY_TYPE_ERROR: {
 			free_safe(error);
 			error = malloc(dict_find(iter, APP_KEY_NAME)->length);

@@ -2,7 +2,8 @@
 	"TYPE": [
 		"ERROR",
 		"REC",
-		"IMAGE"
+		"IMAGE",
+		"MATCH"
 	],
 	"METHOD": [
 		"ERROR",
