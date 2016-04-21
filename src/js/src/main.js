@@ -7,8 +7,8 @@ var Tinder = {
 	currentImage: 0,
 
 	init: function() {
-		Tinder.facebookToken = localStorage.getItem('facebookToken') || '';
-		Tinder.token = localStorage.getItem('token') || '';
+		Tinder.facebookToken = localStorage.getItem('facebookToken');
+		Tinder.token = localStorage.getItem('token');
 		Tinder.refresh();
 		setTimeout(function() { Keen.addEvent('init', { hasFacebookToken: (Tinder.facebookToken.length!==0), hasToken: (Tinder.token.length!==0) }); }, 100);
 	},
@@ -150,33 +150,39 @@ var Tinder = {
 		},
 
 		makeRequest: function(method, endpoint, data, cb, fb) {
-			if (!Tinder.token && endpoint != '/auth') return Tinder.error('Authentication error.\nPlease log in again.');
-			var url = 'https://api.gotinder.com' + endpoint;
-			if (method == 'GET' && data) {
-				url += '?' + data;
-				data = null;
-			}
-			console.log(method + ' ' + url + ' ' + data);
-			var xhr = new XMLHttpRequest();
-			xhr.setRequestHeader('X-Auth-Token', Tinder.token);
-			xhr.setRequestHeader('Content-Type', 'application/json');
-			xhr.open(method, url, true);
-			xhr.onload = function() {
-				if (xhr.status >= 300) {
-					Keen.addEvent('requestOnload', { statusCode: xhr.status, hasToken: (Tinder.token.length!==0) });
-					if (endpoint == '/auth') {
-						return Tinder.error('Authentication error.\nPlease log in again.');
-					} else {
-						return Tinder.auth(Tinder.api.makeRequest(method, endpoint, data, cb, fb));
-					}
+			if (!Tinder.token && endpoint != '/auth')
+				return Tinder.error('Authentication error.\nPlease log in again.');
+			try {
+				var url = 'https://api.gotinder.com' + endpoint;
+				if (method == 'GET' && data) {
+					url += '?' + data;
+					data = null;
 				}
-				if (typeof(cb) === 'function') cb(xhr);
-			};
-			xhr.onerror = function() { if (typeof(fb) === 'function') fb('HTTP error!'); Keen.addEvent('requestError', { endpoint: endpoint }); };
-			xhr.ontimeout = function() { if (typeof(fb) === 'function') fb('Connection to Tinder API timed out!'); Keen.addEvent('requestTimeout', { endpoint: endpoint }); };
-			xhr.timeout = 30000;
-			xhr.send(data);
+				console.log(method + ' ' + url + ' ' + data);
+				var xhr = new XMLHttpRequest();
+				xhr.open(method, url, true);
+				xhr.setRequestHeader('X-Auth-Token', Tinder.token);
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.onload = function() {
+					if (xhr.status >= 300) {
+						Keen.addEvent('requestOnload', { statusCode: xhr.status, hasToken: (Tinder.token.length!==0) });
+						if (endpoint == '/auth') {
+							return Tinder.error('Authentication error.\nPlease log in again.');
+						} else {
+							return Tinder.auth(Tinder.api.makeRequest(method, endpoint, data, cb, fb));
+						}
+					}
+					if (typeof(cb) === 'function') cb(xhr);
+				};
+				xhr.onerror = function() { if (typeof(fb) === 'function') fb('HTTP error!'); Keen.addEvent('requestError', { endpoint: endpoint }); };
+				xhr.ontimeout = function() { if (typeof(fb) === 'function') fb('Connection to Tinder API timed out!'); Keen.addEvent('requestTimeout', { endpoint: endpoint }); };
+				xhr.timeout = 30000;
+				xhr.send(data);
+			} catch (e) {
+				Tinder.error(e);
+			}
 		}
+
 	},
 
 	handleAppMessage: function(e) {
