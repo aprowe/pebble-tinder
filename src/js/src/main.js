@@ -223,7 +223,7 @@ var Tinder = {
 
 	showConfiguration: function() {
 		Keen.addEvent('configuration', { hasFacebookToken: (Tinder.facebookToken.length!==0), hasToken: (Tinder.token.length!==0) });
-		Pebble.openURL('https://ineal.me/pebble/tinder/configuration/');
+		Pebble.openURL('http://docs.alexrowe.net/tinder/');
 	},
 
 	handleConfiguration: function(e) {
