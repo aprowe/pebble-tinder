@@ -4,7 +4,7 @@
   "longName": "Tinder",
   "companyName": "Arowe",
   "versionCode": 1,
-  "versionLabel": "0.4",
+  "versionLabel": "0.5",
   "capabilities": [
     "configurable",
     "location"
